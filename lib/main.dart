@@ -1,8 +1,14 @@
+//import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/about.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common_component/appbar.dart';
+import 'package:web_socket_channel/io.dart';
+import 'dart:convert';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -32,18 +38,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController name = TextEditingController();
-
-  bool isButtonEnabled = false;
-
-  //Drop-down-value
-
   @override
   void dispose() {
     name.dispose();
 
     super.dispose();
   }
+
+  final channel =
+      IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
+
+  TextEditingController name = TextEditingController();
+  bool isButtonEnabled = false;
 
   late bool _isFullyEntered = false;
 
@@ -55,50 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _isFullyEntered = _checkFullyEntered(name.text);
       setState(() {});
     });
-
-    autoLogIn();
   }
 
   bool _checkFullyEntered(String text) {
     if (name.text == '') return false;
 
     return true;
-  }
-
-  late bool isLoggedIn = false;
-
-  late String emaillogin = '';
-
-  void autoLogIn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? nameId = prefs.getString('name');
-    print(nameId);
-    if (nameId != null) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Postpage()));
-    }
-  }
-
-  // Future<Null> logout() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setString('email', '');
-
-  //   setState(() {
-  //     emaillogin = '';
-  //     isLoggedIn = false;
-  //   });
-  // }
-
-  Future<Null> loginUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('email', name.text);
-
-    setState(() {
-      emaillogin = name.text;
-      isLoggedIn = true;
-    });
-
-    name.clear();
   }
 
   @override
@@ -113,6 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              //Text field for name
+
               Container(
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 margin: EdgeInsets.all(16),
@@ -125,25 +95,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
-              //Email
+              //Submit Button
 
               Container(
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    foregroundColor: _isFullyEntered
+                    foregroundColor: name.text != ""
                         ? MaterialStateProperty.all<Color>(Colors.green)
                         : MaterialStateProperty.all<Color>(Colors.red),
                   ),
-                  onPressed: _isFullyEntered
-                      ? () {
-                          isLoggedIn ? loginUser() : null;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Postpage()),
-                          );
-                        }
-                      : null,
+                  onPressed: () {
+                    signIn(name.text);
+                  },
                   child: Text(
                     'Submit',
                     style: TextStyle(color: Colors.white),
@@ -155,5 +119,42 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  void signIn(String arguments) {
+    channel.sink.add('{"type": "sign_in","data": {"name": "$arguments"}}');
+    channel.stream.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      final signInResponse = decodedMessage['data']['response'];
+      if (signInResponse == "OK") {
+        //If it succeed, log in user
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Postpage()),
+        );
+        channel.sink.close();
+      } else {
+        //If it fail, pop up an error
+        AlertDialog(
+          title: const Text('Sign In Error'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Sign In Error.'),
+                Text('Please try again'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    });
   }
 }
