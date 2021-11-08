@@ -56,7 +56,7 @@ class _Createpostpagestate extends State<Createpostpage> {
                   controller: title,
                   maxLines: 1,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Name'),
+                      border: OutlineInputBorder(), labelText: 'Title'),
                   //onSubmitted: (String value) => print(value),
                 ),
               ),

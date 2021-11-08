@@ -16,7 +16,7 @@ class Postpage extends StatefulWidget {
 class _Postpagestate extends State<Postpage> {
   List data = []; //initialized data to be called
 
-  int postLimit = 25;
+  int postLimit = 20;
 
   late Timer timer;
   late Timer timer2;
@@ -44,14 +44,6 @@ class _Postpagestate extends State<Postpage> {
       data = decodedMessage['data']['posts'];
     });
     setState(() {});
-  }
-
-  void deletePost() {
-    streamchannel.listen((message) {
-      final decodedMessage = jsonDecode(message);
-      final deleteData = decodedMessage['type'];
-      print("$deleteData");
-    });
   }
 
   late final String defaultimage =
@@ -201,7 +193,7 @@ class _Postpagestate extends State<Postpage> {
                                           print(deleteID);
                                           channel.sink.add(
                                               '{"type": "delete_post", "data": {"postId": "$deleteID"}}');
-                                          deletePost();
+
                                           setState(() {});
                                         }
                                       },

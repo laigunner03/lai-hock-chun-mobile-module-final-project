@@ -135,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     foregroundColor: name.text != ""
-                        ? MaterialStateProperty.all<Color>(Colors.green)
-                        : MaterialStateProperty.all<Color>(Colors.red),
+                        ? MaterialStateProperty.all<Color>(Colors.red)
+                        : MaterialStateProperty.all<Color>(Colors.green),
                   ),
                   onPressed: () {
                     signIn(name.text);
