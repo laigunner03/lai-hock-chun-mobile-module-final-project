@@ -6,7 +6,18 @@ class Postdetailspage extends StatelessWidget {
   final String defaultimage =
       "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
 
-  Postdetailspage(List<int> list);
+  const Postdetailspage({
+    Key? key,
+    required this.title,
+    required this.description,
+    required this.url,
+    required this.name,
+  }) : super(key: key);
+
+  final String title;
+  final String description;
+  final String url;
+  final String name;
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,15 +27,23 @@ class Postdetailspage extends StatelessWidget {
           title: Text("Post Details"),
         ),
         drawer: appBar(),
-        body: SafeArea(
+        body: SingleChildScrollView(
             child: Column(
           children: [
-            Container(child: Image.network(defaultimage)),
             Container(
-              child: Text("Title"),
+                child: Image.network(
+                    Uri.parse(url).isAbsolute ? url : defaultimage)),
+            Container(
+              child: Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 60),
+              ),
             ),
             Container(
-              child: Text("Details"),
+              child: Text(
+                description,
+                style: TextStyle(fontSize: 24),
+              ),
             ),
           ],
         )),

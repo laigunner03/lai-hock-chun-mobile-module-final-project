@@ -73,11 +73,11 @@ class _Postpagestate extends State<Postpage> {
                     dropdownValue = newValue!;
 
                     //Sorting method
-                    // if (dropdownValue == 'A-Z') {
-                    //               setState(() {
-                    //                 sort(
-                    //                     (a, b) => a.title.compareTo(b.title));
-                    //               });
+                    if (dropdownValue == 'A-Z') {
+                      setState(() {
+                        data.sort((a, b) => a.title.compareTo(b.title));
+                      });
+                    }
                   });
                 },
                 items: <String>['A-Z', 'Z-A', 'Favourite']
@@ -100,7 +100,11 @@ class _Postpagestate extends State<Postpage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Postdetailspage([index])),
+                            builder: (context) => Postdetailspage(
+                                url: data[index]['image'],
+                                title: data[index]['title'],
+                                description: data[index]['description'],
+                                name: data[index]['author'])),
                       );
                     },
                     child: Container(
@@ -176,8 +180,10 @@ class _Postpagestate extends State<Postpage> {
                                     child: FloatingActionButton(
                                       onPressed: () {
                                         if (data[index]['author'] == username) {
+                                          var deleteID = data[index]["_id"];
+                                          print(deleteID);
                                           channel.sink.add(
-                                              '{"type": "delete_post","data": {"postId": data[$index]["_id"]}}');
+                                              '{"type": "delete_post","data": {"postId": $deleteID}}');
                                         }
                                       },
                                       child: const Icon(Icons.delete),
@@ -198,10 +204,10 @@ class _Postpagestate extends State<Postpage> {
         )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => Createpostpage()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Createpostpage()),
+            );
           },
           child: const Icon(Icons.add),
           backgroundColor: Colors.green,
