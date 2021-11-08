@@ -25,17 +25,31 @@ class _Postpagestate extends State<Postpage> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => callPost());
+    callPost();
+    timer =
+        Timer.periodic(Duration(milliseconds: 500), (Timer t) => callPost());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void callPost() {
-    setState(() {
-      channel.sink.add(
-          '{"type": "get_posts", "data": {"lastId": "" , "limit": $postLimit}}');
-      streamchannel.listen((message) {
-        final decodedMessage = jsonDecode(message);
-        data = decodedMessage['data']['posts'];
-      });
+    channel.sink.add(
+        '{"type": "get_posts", "data": {"lastId": "" , "limit": $postLimit}}');
+    streamchannel.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      data = decodedMessage['data']['posts'];
+    });
+    setState(() {});
+  }
+
+  void deletePost() {
+    streamchannel.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      final deleteData = decodedMessage['type'];
+      print("$deleteData");
     });
   }
 
@@ -184,6 +198,8 @@ class _Postpagestate extends State<Postpage> {
                                           print(deleteID);
                                           channel.sink.add(
                                               '{"type": "delete_post","data": {"postId": $deleteID}}');
+                                          deletePost();
+                                          setState(() {});
                                         }
                                       },
                                       child: const Icon(Icons.delete),

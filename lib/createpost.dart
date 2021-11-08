@@ -27,6 +27,7 @@ class _Createpostpagestate extends State<Createpostpage> {
     title.dispose();
     description.dispose();
     imageURL.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,70 +106,34 @@ class _Createpostpagestate extends State<Createpostpage> {
 
   void createPost(titleP, descriptionP, imageP) {
     channel.sink.add(
-        '{"type": "create_post","data": {"title": "$titleP","description": "$descriptionP" ,"image": "$imageP" }}');
-    //print("$titleP $descriptionP $imageP");
-    streamchannel.listen((message) {
-      final decodedMessage = jsonDecode(message);
-      //print("Decoded message : $decodedMessage");
-      final createPostResponse = decodedMessage['type'];
-      print("created post response: $createPostResponse");
-      if (createPostResponse == "new_post") {
-        //If it success, create post
-        //Find a way to create alert
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Post successfully created!'),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: const <Widget>[
-                      Text(
-                          'Post created successfully! You will be redirected to the post page after dismissing this message '),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Postpage()),
-                      );
-                    },
-                  ),
-                ],
-              );
-            });
-      } else {
-        //If it fail, pop up an error alert
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Post failed to be created'),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: const <Widget>[
-                      Text('Please try again'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
-      }
-    });
+        '{"type": "create_post", "data": {"title": "$titleP","description": "$descriptionP" ,"image": "$imageP" }}');
+    print("$titleP $descriptionP $imageP");
 
-    // createPost;
-    // createPost.cancel();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Post successfully created!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text(
+                      'Post created successfully! You will be redirected to the post page after dismissing this message '),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Postpage()),
+                  );
+                },
+              ),
+            ],
+          );
+        });
   }
 }

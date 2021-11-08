@@ -13,7 +13,7 @@ About
 Log out
 
 Conditions:
-\*\*Did not implement bloc
+Critical:Did not implement bloc
 Fully working condition:
 Log in
 Post
@@ -22,4 +22,12 @@ About page
 
 Mostly working
 Show page (Hamfist in refreshing state)
-Create post (Post creatation is iffy but alert is available)
+Create post
+
+Not working
+Delete
+Favourite
+Sort
+
+Biggest Issue
+Not getting the replies correctly despite following the API documentation
