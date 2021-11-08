@@ -8,4 +8,4 @@ import 'dart:io';
 
 final channel = IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
 Stream streamchannel = channel.stream.asBroadcastStream();
-var username;
+late String username;

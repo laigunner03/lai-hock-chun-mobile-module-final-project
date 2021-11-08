@@ -14,9 +14,9 @@ class Postpage extends StatefulWidget {
 }
 
 class _Postpagestate extends State<Postpage> {
-  List data = [];
+  List data = []; //initialized data to be called
 
-  int postLimit = 5;
+  int postLimit = 20;
 
   late Timer timer;
 
@@ -44,8 +44,6 @@ class _Postpagestate extends State<Postpage> {
 
   late String dropdownValue = "A-Z";
 
-  bool isLiked = false;
-
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Post',
@@ -57,6 +55,7 @@ class _Postpagestate extends State<Postpage> {
         body: SafeArea(
             child: Column(
           children: <Widget>[
+            //Drop down button but not working
             Container(
               alignment: Alignment.centerRight,
               child: DropdownButton<String>(
@@ -90,6 +89,8 @@ class _Postpagestate extends State<Postpage> {
                 }).toList(),
               ),
             ),
+
+            //List view
             Expanded(
               child: ListView.builder(
                 itemCount: data.length,
@@ -108,18 +109,24 @@ class _Postpagestate extends State<Postpage> {
                       height: 140,
                       decoration: BoxDecoration(color: Colors.amberAccent[100]),
                       child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-
+                        //Images, if is not valid, show default image
                         children: [
                           Container(
-                              child: Image.network(data[index]['image'],
-                                  height: 140, width: 140, fit: BoxFit.fill)),
+                              child: Image.network(
+                                  Uri.parse(data[index]['image']).isAbsolute &&
+                                          data[index].containsKey('image')
+                                      ? data[index]['image']
+                                      : defaultimage,
+                                  height: 140,
+                                  width: 140,
+                                  fit: BoxFit.fill)),
                           SizedBox(width: 20),
                           Container(
                             width: 140,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
+                                //Tittle
                                 Container(
                                     child: Text(
                                   data[index]['title'],
@@ -127,10 +134,13 @@ class _Postpagestate extends State<Postpage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24),
                                 )),
+
+                                //Description
                                 Container(
                                     child: Text(data[index]['description'],
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis)),
+                                //Author
                                 Container(
                                     child: Text(
                                   data[index]['author'],
@@ -144,12 +154,17 @@ class _Postpagestate extends State<Postpage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  //Like
+                                  //Like button
+
                                   Container(
                                     child: FloatingActionButton(
-                                      onPressed: () {},
-                                      child: const Icon(
-                                          Icons.thumb_up_alt_outlined),
+                                      onPressed: () {
+                                        // if (isLiked[index] == false) {
+                                        //   isLiked[index] = true;
+                                        // } else
+                                        //   isLiked[index] = false;
+                                      },
+                                      child: Icon(Icons.thumb_up_alt_outlined),
                                       backgroundColor: Colors.green,
                                     ),
                                   ),
@@ -159,7 +174,12 @@ class _Postpagestate extends State<Postpage> {
                                   //Delete
                                   Container(
                                     child: FloatingActionButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        if (data[index]['author'] == username) {
+                                          channel.sink.add(
+                                              '{"type": "delete_post","data": {"postId": data[$index]["_id"]}}');
+                                        }
+                                      },
                                       child: const Icon(Icons.delete),
                                       backgroundColor: Colors.green,
                                     ),

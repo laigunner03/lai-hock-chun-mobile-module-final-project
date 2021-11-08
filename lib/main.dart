@@ -125,7 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   maxLines: 1,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Name'),
-                  onSubmitted: (String value) => print(value),
                 ),
               ),
 
@@ -141,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onPressed: () {
                     signIn(name.text);
+                    username = name.text;
                   },
                   child: Text(
                     'Submit',

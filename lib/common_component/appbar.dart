@@ -23,6 +23,7 @@ class appBar extends StatelessWidget {
               ),
             ),
           ),
+          //Direct to about page
           ListTile(
             leading: Icon(Icons.info),
             title: Text('About'),
@@ -33,6 +34,7 @@ class appBar extends StatelessWidget {
               );
             },
           ),
+          //Log out and close connection
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Log Out'),

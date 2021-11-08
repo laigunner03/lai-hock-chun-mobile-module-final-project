@@ -14,7 +14,7 @@ class Aboutpage extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.all(16),
             child: Text(
-              'Hello Deriv',
+              'This app is to log user in and display list of posts being called from an API. Not only that, it allows user to post and delete their posts and to like and unlike post in the post page',
               style: TextStyle(
                   color: Colors.brown.shade400,
                   fontWeight: FontWeight.bold,
