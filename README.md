@@ -11,6 +11,7 @@ App Bar:
 Post (if logged in)
 About
 Log out
+Delete
 
 Conditions:
 Critical:Did not implement bloc
@@ -25,7 +26,6 @@ Show page (Hamfist in refreshing state)
 Create post
 
 Not working
-Delete
 Favourite
 Sort
 

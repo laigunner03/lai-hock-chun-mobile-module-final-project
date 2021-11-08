@@ -16,9 +16,10 @@ class Postpage extends StatefulWidget {
 class _Postpagestate extends State<Postpage> {
   List data = []; //initialized data to be called
 
-  int postLimit = 20;
+  int postLimit = 25;
 
   late Timer timer;
+  late Timer timer2;
 
   // late var username = Postpage.name;
 
@@ -26,8 +27,8 @@ class _Postpagestate extends State<Postpage> {
   void initState() {
     super.initState();
     callPost();
-    timer =
-        Timer.periodic(Duration(milliseconds: 500), (Timer t) => callPost());
+    timer = Timer(Duration(milliseconds: 500), () => callPost());
+    timer2 = Timer.periodic(Duration(seconds: 60), (Timer t) => callPost());
   }
 
   @override
@@ -125,7 +126,7 @@ class _Postpagestate extends State<Postpage> {
                       padding: const EdgeInsets.all(8),
                       margin: EdgeInsets.all(1),
                       height: 140,
-                      decoration: BoxDecoration(color: Colors.amberAccent[100]),
+                      decoration: BoxDecoration(color: Colors.amberAccent[700]),
                       child: Row(
                         //Images, if is not valid, show default image
                         children: [
@@ -151,6 +152,7 @@ class _Postpagestate extends State<Postpage> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24),
+                                  overflow: TextOverflow.ellipsis,
                                 )),
 
                                 //Description
@@ -162,6 +164,7 @@ class _Postpagestate extends State<Postpage> {
                                 Container(
                                     child: Text(
                                   data[index]['author'],
+                                  overflow: TextOverflow.ellipsis,
                                 )),
                               ],
                             ),
@@ -183,7 +186,7 @@ class _Postpagestate extends State<Postpage> {
                                         //   isLiked[index] = false;
                                       },
                                       child: Icon(Icons.thumb_up_alt_outlined),
-                                      backgroundColor: Colors.green,
+                                      backgroundColor: Colors.blue,
                                     ),
                                   ),
 
@@ -197,13 +200,13 @@ class _Postpagestate extends State<Postpage> {
                                           var deleteID = data[index]["_id"];
                                           print(deleteID);
                                           channel.sink.add(
-                                              '{"type": "delete_post","data": {"postId": $deleteID}}');
+                                              '{"type": "delete_post", "data": {"postId": "$deleteID"}}');
                                           deletePost();
                                           setState(() {});
                                         }
                                       },
                                       child: const Icon(Icons.delete),
-                                      backgroundColor: Colors.green,
+                                      backgroundColor: Colors.red,
                                     ),
                                   ),
                                 ]),
@@ -226,7 +229,7 @@ class _Postpagestate extends State<Postpage> {
             );
           },
           child: const Icon(Icons.add),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.grey,
         ),
       ),
     );
