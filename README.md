@@ -22,13 +22,13 @@ Post
 Post details
 About page
 
-Mostly working
+Mostly working:
 Show page (Hamfist in refreshing state)
 Create post
 
-Not working
+Not working:
 Favourite
 Sort
 
-Biggest Issue
+Biggest Issue:
 Not getting the replies correctly despite following the API documentation
