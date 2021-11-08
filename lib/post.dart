@@ -1,10 +1,42 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:lai_hock_chun_mobile_module_final_project/common_component/serverfile.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/createpost.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/postdetails.dart';
 import 'common_component/appbar.dart';
 
-class Postpage extends StatelessWidget {
-  final String defaultimage =
+class Postpage extends StatefulWidget {
+  @override
+  _Postpagestate createState() => _Postpagestate();
+}
+
+class _Postpagestate extends State<Postpage> {
+  //var decodedMessage;
+
+  List data = [];
+
+  int postLimit = 5;
+
+  @override
+  void initState() {
+    super.initState();
+    channel.sink.add('{"type": "get_posts"}');
+    streamchannel.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      data = decodedMessage['data']['posts'];
+      print(decodedMessage);
+      // final postTitle = decodedMessage['data']['posts']['title'];
+      // final postDescription = decodedMessage['data']['posts']['description'];
+      // final postImage = decodedMessage['data']['posts']['image'];
+      // final postAuthor = decodedMessage['data']['posts']['author'];
+      // print("Title: $postTitle");
+      // print("Description: $postDescription");
+      // print("Image: $postImage");
+    });
+  }
+
+  late final String defaultimage =
       "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
 
   late String dropdownValue = "A-Z";
@@ -55,11 +87,10 @@ class Postpage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 2,
+                itemCount: data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      print("Object $index has been tap");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -76,7 +107,7 @@ class Postpage extends StatelessWidget {
 
                         children: [
                           Container(
-                              child: Image.network(defaultimage,
+                              child: Image.network(data[index]['image'],
                                   height: 140, width: 140, fit: BoxFit.fill)),
                           SizedBox(width: 20),
                           Container(
@@ -86,16 +117,19 @@ class Postpage extends StatelessWidget {
                               children: [
                                 Container(
                                     child: Text(
-                                  "Title $index",
+                                  data[index]['title'],
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24),
                                 )),
                                 Container(
-                                    child: Text("Description $index",
+                                    child: Text(data[index]['description'],
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis)),
-                                Container(child: Text("Author $index")),
+                                Container(
+                                    child: Text(
+                                  data[index]['author'],
+                                )),
                               ],
                             ),
                           ),
@@ -150,6 +184,4 @@ class Postpage extends StatelessWidget {
       ),
     );
   }
-
-  void setState(Null Function() param0) {}
 }

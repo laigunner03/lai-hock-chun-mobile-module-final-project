@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/about.dart';
+import 'package:lai_hock_chun_mobile_module_final_project/common_component/serverfile.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common_component/appbar.dart';
@@ -8,6 +10,7 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'dart:io';
+import 'common_component/serverfile.dart';
 
 class Createpostpage extends StatefulWidget {
   @override
@@ -18,9 +21,6 @@ class _Createpostpagestate extends State<Createpostpage> {
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController imageURL = TextEditingController();
-  bool isButtonEnabled = false;
-
-  //Drop-down-value
 
   @override
   void dispose() {
@@ -29,8 +29,12 @@ class _Createpostpagestate extends State<Createpostpage> {
     imageURL.dispose();
   }
 
-  final channel =
-      IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  //final channel = IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,7 @@ class _Createpostpagestate extends State<Createpostpage> {
                   maxLines: 1,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Name'),
-                  onSubmitted: (String value) => print(value),
+                  //onSubmitted: (String value) => print(value),
                 ),
               ),
               Container(
@@ -63,7 +67,7 @@ class _Createpostpagestate extends State<Createpostpage> {
                   maxLines: 5,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Description'),
-                  onSubmitted: (String value) => print(value),
+                  //onSubmitted: (String value) => print(value),
                 ),
               ),
               Container(
@@ -74,7 +78,7 @@ class _Createpostpagestate extends State<Createpostpage> {
                   maxLines: 1,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'ImageURL'),
-                  onSubmitted: (String value) => print(value),
+                  //onSubmitted: (String value) => print(value),
                 ),
               ),
               Container(
@@ -99,17 +103,19 @@ class _Createpostpagestate extends State<Createpostpage> {
     );
   }
 
-  void createPost(String titleP, descriptionP, imageP) {
+  void createPost(titleP, descriptionP, imageP) {
     channel.sink.add(
         '{"type": "create_post","data": {"title": "$titleP","description": "$descriptionP" ,"image": "$imageP" }}');
-    print("$titleP $descriptionP $imageP");
-    channel.stream.listen((message) {
+    //print("$titleP $descriptionP $imageP");
+    streamchannel.listen((message) {
       final decodedMessage = jsonDecode(message);
-      print("$decodedMessage");
+      //print("Decoded message : $decodedMessage");
       final createPostResponse = decodedMessage['type'];
-      print("$createPostResponse");
+      print("created post response: $createPostResponse");
       if (createPostResponse == "new_post") {
         //If it success, create post
+
+        //Find a way to create alert
         AlertDialog(
           title: const Text('Post successfully created!'),
           content: SingleChildScrollView(
@@ -132,7 +138,6 @@ class _Createpostpagestate extends State<Createpostpage> {
             ),
           ],
         );
-        channel.sink.close();
       } else {
         //If it fail, pop up an error alert
         AlertDialog(
@@ -155,5 +160,7 @@ class _Createpostpagestate extends State<Createpostpage> {
         );
       }
     });
+    // createPost;
+    // createPost.cancel();
   }
 }

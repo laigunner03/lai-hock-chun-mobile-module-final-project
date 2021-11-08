@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/about.dart';
+import 'package:lai_hock_chun_mobile_module_final_project/common_component/serverfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
@@ -36,6 +37,7 @@ class appBar extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: Text('Log Out'),
             onTap: () {
+              channel.sink.close();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => MyApp()),

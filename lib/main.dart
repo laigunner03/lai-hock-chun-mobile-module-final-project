@@ -1,4 +1,6 @@
 //import 'dart:html';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/about.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/post.dart';
@@ -9,6 +11,8 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'dart:io';
+
+import 'common_component/serverfile.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,11 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     name.dispose();
 
-    super.dispose();
+    //super.dispose();
   }
 
-  final channel =
-      IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
+  //final channel =IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
 
   TextEditingController name = TextEditingController();
   bool isButtonEnabled = false;
@@ -56,7 +59,40 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    streamchannel.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      final signInResponse = decodedMessage['data']['response'];
+      if (signInResponse == "OK") {
+        //If it succeed, log in user
 
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Postpage()),
+        );
+      } else {
+        //channel.sink.close();
+        //If it fail, pop up an error
+        AlertDialog(
+          title: const Text('Sign In Error'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Sign In Error.'),
+                Text('Please try again'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    });
     name.addListener(() {
       _isFullyEntered = _checkFullyEntered(name.text);
       setState(() {});
@@ -123,38 +159,5 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void signIn(String arguments) {
     channel.sink.add('{"type": "sign_in","data": {"name": "$arguments"}}');
-    channel.stream.listen((message) {
-      final decodedMessage = jsonDecode(message);
-      final signInResponse = decodedMessage['data']['response'];
-      if (signInResponse == "OK") {
-        //If it succeed, log in user
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Postpage()),
-        );
-        channel.sink.close();
-      } else {
-        //If it fail, pop up an error
-        AlertDialog(
-          title: const Text('Sign In Error'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('Sign In Error.'),
-                Text('Please try again'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
-    });
   }
 }
