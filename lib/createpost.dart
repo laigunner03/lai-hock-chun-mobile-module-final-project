@@ -114,52 +114,60 @@ class _Createpostpagestate extends State<Createpostpage> {
       print("created post response: $createPostResponse");
       if (createPostResponse == "new_post") {
         //If it success, create post
-
         //Find a way to create alert
-        AlertDialog(
-          title: const Text('Post successfully created!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text(
-                    'Post created successfully! You will be redirected to the post page after dismissing this message '),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Postpage()),
-                );
-              },
-            ),
-          ],
-        );
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Post successfully created!'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: const <Widget>[
+                      Text(
+                          'Post created successfully! You will be redirected to the post page after dismissing this message '),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Postpage()),
+                      );
+                    },
+                  ),
+                ],
+              );
+            });
       } else {
         //If it fail, pop up an error alert
-        AlertDialog(
-          title: const Text('Post failed to be created'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('Please try again'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Post failed to be created'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: const <Widget>[
+                      Text('Please try again'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
       }
     });
+
     // createPost;
     // createPost.cancel();
   }
