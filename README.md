@@ -1,6 +1,7 @@
 # lai_hock_chun_mobile_module_final_project
 
-Mobile Project.
+Mobile Project Documentation:
+-General Gist of the documents
 
 Pages:
 Main(Log In page)
