@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/common_component/serverfile.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/createpost.dart';
 import 'package:lai_hock_chun_mobile_module_final_project/postdetails.dart';
 import 'common_component/appbar.dart';
+
+//State issue: Post won't show unless hot reload
 
 class Postpage extends StatefulWidget {
   @override
@@ -12,27 +14,28 @@ class Postpage extends StatefulWidget {
 }
 
 class _Postpagestate extends State<Postpage> {
-  //var decodedMessage;
-
   List data = [];
 
   int postLimit = 5;
 
+  late Timer timer;
+
+  // late var username = Postpage.name;
+
   @override
   void initState() {
     super.initState();
-    channel.sink.add('{"type": "get_posts"}');
-    streamchannel.listen((message) {
-      final decodedMessage = jsonDecode(message);
-      data = decodedMessage['data']['posts'];
-      print(decodedMessage);
-      // final postTitle = decodedMessage['data']['posts']['title'];
-      // final postDescription = decodedMessage['data']['posts']['description'];
-      // final postImage = decodedMessage['data']['posts']['image'];
-      // final postAuthor = decodedMessage['data']['posts']['author'];
-      // print("Title: $postTitle");
-      // print("Description: $postDescription");
-      // print("Image: $postImage");
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => callPost());
+  }
+
+  void callPost() {
+    setState(() {
+      channel.sink.add(
+          '{"type": "get_posts", "data": {"lastId": "" , "limit": $postLimit}}');
+      streamchannel.listen((message) {
+        final decodedMessage = jsonDecode(message);
+        data = decodedMessage['data']['posts'];
+      });
     });
   }
 
@@ -40,6 +43,8 @@ class _Postpagestate extends State<Postpage> {
       "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
 
   late String dropdownValue = "A-Z";
+
+  bool isLiked = false;
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -94,7 +99,7 @@ class _Postpagestate extends State<Postpage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Postdetailspage()),
+                            builder: (context) => Postdetailspage([index])),
                       );
                     },
                     child: Container(
@@ -173,10 +178,10 @@ class _Postpagestate extends State<Postpage> {
         )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Createpostpage()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => Createpostpage()),
+            // );
           },
           child: const Icon(Icons.add),
           backgroundColor: Colors.green,

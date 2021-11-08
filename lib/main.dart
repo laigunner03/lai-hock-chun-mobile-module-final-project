@@ -46,10 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     name.dispose();
 
-    //super.dispose();
+    super.dispose();
   }
-
-  //final channel =IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
 
   TextEditingController name = TextEditingController();
   bool isButtonEnabled = false;

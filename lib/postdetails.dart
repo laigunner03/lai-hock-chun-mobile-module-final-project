@@ -6,6 +6,8 @@ class Postdetailspage extends StatelessWidget {
   final String defaultimage =
       "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
 
+  Postdetailspage(List<int> list);
+
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hello Deriv',
